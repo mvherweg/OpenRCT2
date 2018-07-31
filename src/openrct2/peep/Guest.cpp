@@ -14,6 +14,7 @@
 *****************************************************************************/
 #pragma endregion
 
+#include <iostream>
 #include "../audio/audio.h"
 #include "../config/Config.h"
 #include "../core/Guard.hpp"
@@ -43,6 +44,7 @@
 #include "../world/Surface.h"
 #include "../windows/Intent.h"
 #include "Peep.h"
+#include "../rct1/Tables.h"
 
 // Locations of the spiral slide platform that a peep walks from the entrance of the ride to the
 // entrance of the slide. Up to 4 waypoints for each 4 sides that an ride entrance can be located
@@ -373,6 +375,7 @@ static void   peep_decide_whether_to_leave_park(rct_peep * peep);
 static void   peep_leave_park(rct_peep * peep);
 static void   peep_head_for_nearest_ride_type(rct_peep * peep, sint32 rideType);
 static void   peep_head_for_nearest_ride_with_flags(rct_peep * peep, sint32 rideTypeFlags);
+static std::string json(rct_peep * peep);
 bool loc_690FD0(rct_peep * peep, uint8 * rideToView, uint8 * rideSeatToView, rct_tile_element * tileElement);
 
 void rct_peep::Tick128UpdateGuest(sint32 index)
@@ -3325,6 +3328,8 @@ void rct_peep::UpdateBuying()
                 if (item_bought)
                 {
                     ride->no_secondary_items_sold++;
+                    std::string event = R"({"ts": )" + std::to_string(gScenarioTicks) + R"(, "pos": )" + json(ride) + R"(, "customer": )" + json(this) + R"(, "item": )" + json(ride_type->shop_item_secondary, price) + R"(, "quantity": )" + std::to_string(1) + R"(})";
+                    std::cout << event << std::endl;
                 }
             }
 
@@ -3336,6 +3341,8 @@ void rct_peep::UpdateBuying()
                 if (item_bought)
                 {
                     ride->no_primary_items_sold++;
+                    std::string event = R"({"ts": )" + std::to_string(gScenarioTicks) + R"(, "pos": )" + json(ride) + R"(, "customer": )" + json(this) + R"(, "item": )" + json(ride_type->shop_item, price) + R"(, "quantity": )" + std::to_string(1) + R"(})";
+                    std::cout << event << std::endl;
                 }
             }
         }
@@ -3344,7 +3351,6 @@ void rct_peep::UpdateBuying()
     if (item_bought)
     {
         ride_update_popularity(ride, 1);
-
         StopPurchaseThought(ride->type);
     }
     else
@@ -6800,4 +6806,11 @@ void rct_peep::UpdateSpriteType()
     }
 
     SetSpriteType(PEEP_SPRITE_TYPE_NORMAL);
+}
+
+static std::string json(rct_peep * peep) {
+    utf8   name[256];
+    uint32 peepIndex = peep->id;
+    format_string(name, 256, peep->name_string_idx, &peepIndex); //MH20180731: Voodoo
+    return R"({"id": )" + std::to_string(peep->id) + R"(, "name": ")" + name + R"(", "x": )" + std::to_string(peep->x) + R"(, "y": )" + std::to_string(peep->y) + R"(, "entry_ts": )" + std::to_string(peep->time_in_park) + R"(})";
 }

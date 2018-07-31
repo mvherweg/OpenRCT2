@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <iostream>
 #include "../common.h"
 
 struct Ride;
@@ -112,3 +113,5 @@ bool shop_item_is_food_or_drink(sint32 shopItem);
 bool shop_item_is_food(sint32 shopItem);
 bool shop_item_is_drink(sint32 shopItem);
 bool shop_item_is_souvenir(sint32 shopItem);
+
+std::string json(sint32 shopItem, money16 price);

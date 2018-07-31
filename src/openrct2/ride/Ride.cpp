@@ -8279,3 +8279,12 @@ void determine_ride_entrance_and_exit_locations()
         }
     }
 }
+
+std::string json(Ride * ride) {
+    char ride_name[128];
+    format_string(ride_name, 128, ride->name, &ride->name_arguments);
+
+    char ride_type[128];
+    get_ride_entry_name(ride_type, ride->subtype);
+    return R"({"id": )" + std::to_string(ride->name) + R"( , "name": ")" + ride_name + R"(" , "model_id": )" + std::to_string(ride->type) + R"( , "model_name": ")" + ride_type + R"(", "x": )" + std::to_string(ride->overall_view.x * 32) + R"(, "y": )" + std::to_string(ride->overall_view.y * 32) + R"(})";
+}
