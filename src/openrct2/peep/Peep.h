@@ -18,6 +18,7 @@
 #define _PEEP_H_
 
 #include "../common.h"
+#include "../core/DataStream.h"
 #include "../rct12/RCT12.h"
 #include "../world/Location.hpp"
 
@@ -526,6 +527,8 @@ struct rct_peep_thought
 };
 assert_struct_size(rct_peep_thought, 4);
 
+
+
 struct rct_peep
 {
     uint8  sprite_identifier; // 0x00
@@ -827,6 +830,19 @@ public: // Guest
     void   CheckCantFindExit();
     bool   DecideAndBuyItem(uint8 rideIndex, sint32 shopItem, money32 price);
     void   SetSpriteType(uint8 new_sprite_type);
+
+
+public: // datastream general
+    msg_reporter asReporter();
+private: // datastream general
+    MSG_REPORTER_TYPE reporterType();
+    std::string fullName();
+    msg_location location();
+    msg_peep_identity identity();
+
+private: // datastream guest events
+    msg_peep_purchase purchase(Ride * ride, sint32 shopItem, money32 price, bool usedVoucher);
+    msg purchaseMessage(Ride * ride, sint32 shopItem, money32 price, bool usedVoucher);
 };
 assert_struct_size(rct_peep, 0x100);
 #pragma pack(pop)

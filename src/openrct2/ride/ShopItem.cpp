@@ -438,8 +438,3 @@ bool shop_item_is_souvenir(sint32 shopItem)
     }
 }
 
-std::string json(sint32 shopItem, money16 price) {
-    char item_name[128];
-    format_string(item_name, 128, ShopItemStringIds[shopItem].singular, nullptr);
-    return R"({"id": )" + std::to_string(shopItem) + R"(,"name": ")" + item_name + R"(", price": )" + std::to_string(price) + R"(", cost": )" + std::to_string(get_shop_item_cost(shopItem)) + R"(})";
-}

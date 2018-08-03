@@ -18,6 +18,7 @@
 #define _RIDE_H_
 
 #include "../common.h"
+#include "../core/DataStream.h"
 #include "../peep/Peep.h"
 #include "../rct12/RCT12.h"
 #include "../rct2/RCT2.h"
@@ -332,6 +333,16 @@ struct Ride
     uint8 cable_lift_z;
     uint16 cable_lift;
     uint16 queue_length[MAX_STATIONS];
+
+public: // datastream general
+    msg_reporter asReporter();
+    msg_ride_identity identity();
+    msg_location location();
+private: // datastream general
+    MSG_REPORTER_TYPE reporterType();
+    std::string fullName();
+    std::string typeName();
+    std::string subtypeName();
 };
 
 #pragma pack(push, 1)
@@ -1137,7 +1148,5 @@ void ride_stop_peeps_queuing(sint32 rideIndex);
 LocationXY16 ride_get_rotated_coords(sint16 x, sint16 y, sint16 z);
 
 void determine_ride_entrance_and_exit_locations();
-
-std::string json(Ride * ride);
 
 #endif

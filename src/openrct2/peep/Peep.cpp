@@ -3937,3 +3937,59 @@ static void peep_release_balloon(rct_peep * peep, sint16 spawn_height)
         }
     }
 }
+
+MSG_REPORTER_TYPE rct_peep::reporterType()
+{
+    switch(type)
+    {
+        case PEEP_TYPE_GUEST:
+            return MSG_REPORTER_TYPE_GUEST;
+        case PEEP_TYPE_STAFF:
+            return MSG_REPORTER_TYPE_STAFF;
+        default:
+            return MSG_REPORTER_TYPE_OTHER;
+    }
+}
+
+std::string rct_peep::fullName() {
+    utf8 name[256];
+    format_string(name, 256, name_string_idx, &id);
+    return name;
+}
+
+msg_reporter rct_peep::asReporter() {
+    return { reporterType(), id, fullName() };
+}
+
+msg_location rct_peep::location() {
+    return { static_cast<sint32>(x), static_cast<sint32>(y) };
+}
+
+msg_peep_identity rct_peep::identity() {
+    return { id, fullName() };
+}
+
+msg_peep_purchase rct_peep::purchase(Ride * ride, sint32 shopItem, money32 price, bool usedVoucher)
+{
+    money32 reduction;
+    if (usedVoucher) // TODO: thoroughly check that this function is never called for park entrance fees
+    {
+        reduction = price;
+    } else {
+        reduction = 0;
+    }
+
+    return {
+        ++gSaleId,
+        ride->identity(),
+        identity(),
+        itemSale(shopItem, price, 1, reduction, usedVoucher),
+        gScenarioTicks
+    };
+}
+
+msg rct_peep::purchaseMessage(Ride *ride, sint32 shopItem, money32 price, bool usedVoucher) {
+    msg_meta meta = createEventMeta(MSG_PAYLOAD_TYPE_PURCHASE, ride->asReporter(), ride->location(), false);
+    msg_data data = purchase(ride, shopItem, price, usedVoucher).json();
+    return { meta, data };
+}

@@ -8280,11 +8280,39 @@ void determine_ride_entrance_and_exit_locations()
     }
 }
 
-std::string json(Ride * ride) {
-    char ride_name[128];
-    format_string(ride_name, 128, ride->name, &ride->name_arguments);
+std::string Ride::fullName() {
+    char full_name[128];
+    format_string(full_name, 128, name, &name_arguments);
+    return full_name;
+}
 
-    char ride_type[128];
-    get_ride_entry_name(ride_type, ride->subtype);
-    return R"({"id": )" + std::to_string(ride->name) + R"( , "name": ")" + ride_name + R"(" , "model_id": )" + std::to_string(ride->type) + R"( , "model_name": ")" + ride_type + R"(", "x": )" + std::to_string(ride->overall_view.x * 32) + R"(, "y": )" + std::to_string(ride->overall_view.y * 32) + R"(})";
+std::string Ride::typeName() {
+    char type_name[128];
+    get_ride_entry_name(type_name, type);
+    return type_name;
+}
+
+std::string Ride::subtypeName() {
+    char subtype_name[128];
+    get_ride_entry_name(subtype_name, subtype);
+    return subtype_name;
+}
+
+MSG_REPORTER_TYPE Ride::reporterType() {
+    return MSG_REPORTER_TYPE_POS;
+}
+
+
+msg_reporter Ride::asReporter()
+{
+    return { reporterType(), name, fullName() };
+}
+
+msg_location Ride::location()
+{
+    return { overall_view.x * 32, overall_view.y * 32 };
+}
+
+msg_ride_identity Ride::identity() {
+    return { name, typeName(), subtypeName(), fullName() };
 }
