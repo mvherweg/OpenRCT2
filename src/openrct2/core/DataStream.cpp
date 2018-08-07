@@ -61,6 +61,7 @@ std::string msg_meta::payloadTypeName() {
 std::string msg_meta::json() {
     // Condensed Example: {"message": "event", "payload": "purchase", "reporter": ..., "location": ..., "ts": 789, "interval": 0, "repeated": false}
     // TODO: permit leaving out interval?
+    // TODO: repeated is turned into 0 when cast to string
     return R"({"message": ")" + messageTypeName() + "\"" \
          + R"(, "payload": ")" + payloadTypeName() + "\"" \
          + R"(, "site": ")" + park_name + "\"" \
@@ -98,8 +99,7 @@ void msg::sendMessage() {
 std::string msg_ride_identity::json() {
     // Example: {"id": 123, "type": "abc", "subtype": "def", "name": "Ghi"}
     return R"({"id": )" + std::to_string(id) \
-         + R"(, "type": ")" + type + "\"" \
-         + R"(, "subtype": ")" + subtype +"\"" \
+         + R"(, "subtype": ")" + category +"\"" \
          + R"(, "name": ")" + name + "\"" \
          + R"(})";
 }
@@ -111,6 +111,7 @@ std::string msg_peep_identity::json() {
 
 std::string msg_item_sale::json() {
     // Example: {"id": 123, "name": "abc", "price": 10, "quantity": 1, "reduction": 0, "voucher": false}
+    // TODO: voucher is turned into 0 when cast to string
     return R"({"id": )" + std::to_string(id) \
          + R"(, "name": ")" + name \
          + R"(", "price": )" + std::to_string(price) \

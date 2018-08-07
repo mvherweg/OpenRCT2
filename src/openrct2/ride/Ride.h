@@ -341,7 +341,6 @@ public: // datastream general
 private: // datastream general
     MSG_REPORTER_TYPE reporterType();
     std::string fullName();
-    std::string typeName();
     std::string subtypeName();
 };
 

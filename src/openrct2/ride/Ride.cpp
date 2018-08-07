@@ -8286,12 +8286,6 @@ std::string Ride::fullName() {
     return full_name;
 }
 
-std::string Ride::typeName() {
-    char type_name[128];
-    get_ride_entry_name(type_name, type);
-    return type_name;
-}
-
 std::string Ride::subtypeName() {
     char subtype_name[128];
     get_ride_entry_name(subtype_name, subtype);
@@ -8314,5 +8308,5 @@ msg_location Ride::location()
 }
 
 msg_ride_identity Ride::identity() {
-    return { name, typeName(), subtypeName(), fullName() };
+    return { name, subtypeName(), fullName() };
 }

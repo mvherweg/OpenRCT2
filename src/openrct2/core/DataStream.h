@@ -87,8 +87,7 @@ public:
 struct msg_ride_identity
 {
     uint16 id;
-    std::string type;
-    std::string subtype;
+    std::string category;
     std::string name;
 
 public:
